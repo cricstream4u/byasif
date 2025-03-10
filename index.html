@@ -164,48 +164,30 @@
 <body>
     <div id="jwplayerDiv"></div>
     <script>
-    async function fetchStreamUrl() {
-        try {
-            const response = await fetch("https://stream.crichd.sc/update/star1hi.php");
-            const text = await response.text();
+    // Initialize JW Player
+    const playerInstance = jwplayer("jwplayerDiv");
 
-            // Extract the .m3u8 URL (requires regex or DOM parsing)
-            const hlsStreamUrlMatch = text.match(/(https?:\/\/.*?\.m3u8)/);
-            if (hlsStreamUrlMatch && hlsStreamUrlMatch[0]) {
-                return hlsStreamUrlMatch[0];
-            } else {
-                throw new Error("No HLS stream found.");
-            }
-        } catch (error) {
-            console.error("Error fetching stream URL:", error);
-            alert("Unable to load the stream.");
-            return null;
+    // Configure the player with the fixed HLS stream URL
+    playerInstance.setup({
+        file: "https://crichdplaylist.extratvteam.workers.dev/master.m3u8?cid=star1in",
+        width: "100%",
+        height: "100%",
+        aspectratio: "16:9",
+        autostart: true,
+        mute: false,
+        type: "hls", // Ensures HLS compatibility
+        preload: "auto", // Preload stream for faster playback
+        cast: {
+            appid: "CC1AD845" // Chromecast App ID (optional)
         }
-    }
+    });
 
-    async function initializePlayer() {
-        const hlsStreamUrl = await fetchStreamUrl();
-        if (!hlsStreamUrl) return;
-
-        jwplayer("jwplayerDiv").setup({
-            file: hlsStreamUrl,
-            width: "100%",
-            height: "100%",
-            aspectratio: "16:9",
-            autostart: true,
-            mute: false,
-            type: "hls",
-            preload: "auto",
-            cast: { appid: "CC1AD845" }
-        });
-
-        jwplayer("jwplayerDiv").on('error', function(error) {
-            console.error("Player error:", error.message);
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", initializePlayer);
+    // Handle player errors gracefully
+    playerInstance.on('error', function(error) {
+        console.error("Error loading stream:", error.message);
+    });
 </script>
+
 
 
        <center>
